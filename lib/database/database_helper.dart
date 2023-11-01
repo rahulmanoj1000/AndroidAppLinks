@@ -6,17 +6,19 @@ import 'package:path/path.dart';
 //static final is used when the value should be changed when an instance is created
 class DatabaseHelper {
   static const _dbName = 'myDatabase.db';
-  static const _dbVersion = 3;
+  static const _dbVersion = 1;
   static const _tableName = 'myTable';
   static const _tableLinks = 'myLinks';
 
   static const columnId = '_id';
   static const columntitle = 'title';
   static const columnbody = 'body';
+  static const textPriority = 'textPriority';
 
   static const linksId = 'links_id';
   static const linksName = 'links_name';
   static const link = 'link';
+  static const linkPriority = 'linkPriority';
 
   //making a singleton class
   DatabaseHelper._privateConstructor();
@@ -41,20 +43,25 @@ class DatabaseHelper {
       CREATE TABLE $_tableName(
       $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
       $columntitle TEXT NOT NULL,
-      $columnbody TEXT)
+      $columnbody TEXT,
+      $textPriority TEXT
+      )
+
       ''');
+
+    await db.execute('''
+  CREATE TABLE $_tableLinks (
+    $linksId INTEGER PRIMARY KEY AUTOINCREMENT,
+    $linksName TEXT NOT NULL,
+    $link TEXT,
+    $linkPriority TEXT
+  )
+''');
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       // Handle schema changes for version 2, like adding the 'myLinks' table
-      await db.execute('''
-      CREATE TABLE $_tableLinks (
-        $linksId INTEGER PRIMARY KEY AUTOINCREMENT,
-        $linksName TEXT NOT NULL,,
-        $link TEXT
-      )
-    ''');
     }
     // You can add more conditions for different database version upgrades
   }

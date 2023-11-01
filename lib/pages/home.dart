@@ -14,7 +14,7 @@ class Home extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/38596.jpg'),
+              image: AssetImage('assets/HomePageBackground.jpg'),
               fit: BoxFit.cover,
               colorFilter: ColorFilter.mode(
                   Colors.black.withOpacity(0.7), BlendMode.dstATop)),

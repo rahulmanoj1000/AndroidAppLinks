@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:links/database/database_helper.dart';
+import 'package:links/services/color_priority.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -12,7 +13,7 @@ class PreviewLink extends StatefulWidget {
 
 class _PreviewLinkState extends State<PreviewLink> {
   late List<Map<String, dynamic>> x = [];
-
+  ColorPriority colorPriority = ColorPriority();
   @override
   void initState() {
     super.initState();
@@ -32,8 +33,19 @@ class _PreviewLinkState extends State<PreviewLink> {
   }
 
   Future<void> _launchUrl(Uri url) async {
-    if (!await launchUrl(url)) {
-      throw Exception('Could not launch $url');
+    try {
+      if (!await launchUrl(url)) {
+        throw Exception('Could not launch $url');
+      }
+    } catch (e) {
+      final snackBar = SnackBar(
+        content: const Text('Invalid Link Stored Here!! Please modify!!'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {},
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
@@ -92,7 +104,7 @@ class _PreviewLinkState extends State<PreviewLink> {
                           shape: BeveledRectangleBorder(
                             borderRadius: BorderRadius.circular(3.0),
                           ),
-                          color: Colors.black,
+                          color: colorPriority.colour(x[index]['linkPriority']),
                         ),
                         child: IconButton(
                             icon: const Icon(
@@ -106,6 +118,7 @@ class _PreviewLinkState extends State<PreviewLink> {
                                     'links_id': x[index]['links_id'],
                                     'links_name': x[index]['links_name'],
                                     'link': x[index]['link'],
+                                    'linkPriority': x[index]['linkPriority'],
                                   });
                               fetchData();
                             }),

@@ -96,6 +96,9 @@ class _CrLinkState extends State<CrLink> {
                   ),
                   elevation: 16,
                   style: const TextStyle(color: Colors.black),
+                  underline: Container(
+                    height: 0,
+                  ),
                   // Set text color based on the selected key
 
                   onChanged: (String? value) {
@@ -112,7 +115,8 @@ class _CrLinkState extends State<CrLink> {
                       value: key,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(key),
+                        child: Text(key,
+                            style: const TextStyle(color: Colors.black)),
                       ),
                     );
                   }).toList(),
@@ -139,21 +143,32 @@ class _CrLinkState extends State<CrLink> {
                   padding: const EdgeInsets.symmetric(horizontal: 150),
                 ),
                 onPressed: () async {
-                  if (isDataReceived == false) {
-                    await DatabaseHelper.instance.insertLink({
-                      DatabaseHelper.linksName: titleController.text,
-                      DatabaseHelper.link: contentController.text,
-                      DatabaseHelper.linkPriority: dropdownValue,
-                    });
-                    Navigator.pop(context);
+                  if (titleController.text.replaceAll(" ", "") != "") {
+                    if (isDataReceived == false) {
+                      await DatabaseHelper.instance.insertLink({
+                        DatabaseHelper.linksName: titleController.text,
+                        DatabaseHelper.link: contentController.text,
+                        DatabaseHelper.linkPriority: dropdownValue,
+                      });
+                      Navigator.pop(context);
+                    } else {
+                      await DatabaseHelper.instance.updateLink({
+                        DatabaseHelper.linksId: id,
+                        DatabaseHelper.linksName: titleController.text,
+                        DatabaseHelper.link: contentController.text,
+                        DatabaseHelper.linkPriority: dropdownValue,
+                      });
+                      Navigator.pop(context);
+                    }
                   } else {
-                    await DatabaseHelper.instance.updateLink({
-                      DatabaseHelper.linksId: id,
-                      DatabaseHelper.linksName: titleController.text,
-                      DatabaseHelper.link: contentController.text,
-                      DatabaseHelper.linkPriority: dropdownValue,
-                    });
-                    Navigator.pop(context);
+                    final snackBar = SnackBar(
+                      content: const Text('Please Add A Label!!'),
+                      action: SnackBarAction(
+                        label: 'Undo',
+                        onPressed: () {},
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 },
                 child: const Text("Save"),

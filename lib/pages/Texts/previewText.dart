@@ -22,8 +22,6 @@ class _PreviewTextState extends State<PreviewText> {
 
   Future<void> fetchData() async {
     List<Map<String, dynamic>> data = await dbData();
-    print("++++++++++++++++++++++");
-    print(data);
     setState(() {
       x = data;
     });
@@ -87,8 +85,6 @@ class _PreviewTextState extends State<PreviewText> {
                   child: ListTile(
                     onTap: () async {
                       // Handle the regular tap action, if needed
-                      print(x[index]['textPriority']);
-                      print("***");
                       await Navigator.pushNamed(context, '/crtext', arguments: {
                         '_id': x[index]['_id'],
                         'title': x[index]['title'],

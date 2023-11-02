@@ -34,7 +34,13 @@ class _PreviewLinkState extends State<PreviewLink> {
 
   Future<void> _launchUrl(Uri url) async {
     try {
-      if (!await launchUrl(url)) {
+      if (url.scheme.isEmpty) {
+        // If the URL doesn't have a scheme, assume it's HTTP.
+        url = Uri.parse("http://${url.toString()}");
+      }
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url);
+      } else {
         throw Exception('Could not launch $url');
       }
     } catch (e) {

@@ -84,7 +84,9 @@ class _CrTextState extends State<CrText> {
                   elevation: 16,
                   style: const TextStyle(color: Colors.black),
                   // Set text color based on the selected key
-
+                  underline: Container(
+                    height: 0,
+                  ),
                   onChanged: (String? value) {
                     // This is called when the user selects an item.
                     textPriorityColorG =
@@ -124,22 +126,32 @@ class _CrTextState extends State<CrText> {
                   padding: const EdgeInsets.symmetric(horizontal: 150),
                 ),
                 onPressed: () async {
-                  if (isDataReceived == false) {
-                    await DatabaseHelper.instance.insert({
-                      DatabaseHelper.columntitle: titleController.text,
-                      DatabaseHelper.columnbody: contentController.text,
-                      DatabaseHelper.textPriority: dropdownValue,
-                    });
-                    print(dropdownValue);
-                    Navigator.pop(context);
+                  if (titleController.text.replaceAll(" ", "") != "") {
+                    if (isDataReceived == false) {
+                      await DatabaseHelper.instance.insert({
+                        DatabaseHelper.columntitle: titleController.text,
+                        DatabaseHelper.columnbody: contentController.text,
+                        DatabaseHelper.textPriority: dropdownValue,
+                      });
+                      Navigator.pop(context);
+                    } else {
+                      await DatabaseHelper.instance.update({
+                        DatabaseHelper.columnId: id,
+                        DatabaseHelper.columntitle: titleController.text,
+                        DatabaseHelper.columnbody: contentController.text,
+                        DatabaseHelper.textPriority: dropdownValue,
+                      });
+                      Navigator.pop(context);
+                    }
                   } else {
-                    await DatabaseHelper.instance.update({
-                      DatabaseHelper.columnId: id,
-                      DatabaseHelper.columntitle: titleController.text,
-                      DatabaseHelper.columnbody: contentController.text,
-                      DatabaseHelper.textPriority: dropdownValue,
-                    });
-                    Navigator.pop(context);
+                    final snackBar = SnackBar(
+                      content: const Text('Please Add A Label!!'),
+                      action: SnackBarAction(
+                        label: 'Undo',
+                        onPressed: () {},
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 },
                 child: const Text("Save"),

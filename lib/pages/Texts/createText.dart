@@ -145,7 +145,7 @@ class _CrTextState extends State<CrText> {
                     }
                   } else {
                     final snackBar = SnackBar(
-                      content: const Text('Please Add A Label!!'),
+                      content: const Text('Please Add A Title!!'),
                       action: SnackBarAction(
                         label: 'Undo',
                         onPressed: () {},

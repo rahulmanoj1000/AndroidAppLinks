@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:links/database/database_helper.dart';
 import 'package:links/services/color_priority.dart';
 import 'package:links/services/text_format.dart';
@@ -137,41 +138,70 @@ class _CrLinkState extends State<CrLink> {
                     labelText: 'Enter the link you want to save'),
               ),
               const SizedBox(height: 50),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(horizontal: 150),
-                ),
-                onPressed: () async {
-                  if (titleController.text.replaceAll(" ", "") != "") {
-                    if (isDataReceived == false) {
-                      await DatabaseHelper.instance.insertLink({
-                        DatabaseHelper.linksName: titleController.text,
-                        DatabaseHelper.link: contentController.text,
-                        DatabaseHelper.linkPriority: dropdownValue,
-                      });
-                      Navigator.pop(context);
-                    } else {
-                      await DatabaseHelper.instance.updateLink({
-                        DatabaseHelper.linksId: id,
-                        DatabaseHelper.linksName: titleController.text,
-                        DatabaseHelper.link: contentController.text,
-                        DatabaseHelper.linkPriority: dropdownValue,
-                      });
-                      Navigator.pop(context);
-                    }
-                  } else {
-                    final snackBar = SnackBar(
-                      content: const Text('Please Add A Label!!'),
-                      action: SnackBarAction(
-                        label: 'Undo',
-                        onPressed: () {},
+              Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        // padding: const EdgeInsets.symmetric(horizontal: 140),
                       ),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                },
-                child: const Text("Save"),
+                      onPressed: () async {
+                        if (titleController.text.replaceAll(" ", "") != "") {
+                          if (isDataReceived == false) {
+                            await DatabaseHelper.instance.insertLink({
+                              DatabaseHelper.linksName: titleController.text,
+                              DatabaseHelper.link: contentController.text,
+                              DatabaseHelper.linkPriority: dropdownValue,
+                            });
+                            Navigator.pop(context);
+                          } else {
+                            await DatabaseHelper.instance.updateLink({
+                              DatabaseHelper.linksId: id,
+                              DatabaseHelper.linksName: titleController.text,
+                              DatabaseHelper.link: contentController.text,
+                              DatabaseHelper.linkPriority: dropdownValue,
+                            });
+                            Navigator.pop(context);
+                          }
+                        } else {
+                          final snackBar = SnackBar(
+                            content: const Text('Please Add A Label!!'),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {},
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      },
+                      child: const Text("Save"),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black, // Background color
+                        borderRadius: BorderRadius.circular(
+                            8.0), // Adjust the radius as needed
+                      ),
+                      child: IconButton(
+                        onPressed: () async {
+                          final clipboardData =
+                              await Clipboard.getData(Clipboard.kTextPlain);
+                          if (clipboardData != null &&
+                              clipboardData.text != null) {
+                            contentController.text = clipboardData.text!;
+                          }
+                        },
+                        icon: const Icon(Icons.paste,
+                            color: Colors.white), // Paste icon with white color
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

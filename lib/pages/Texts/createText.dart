@@ -117,7 +117,13 @@ class _CrTextState extends State<CrText> {
               TextFormField(
                 controller: contentController,
                 decoration: const InputDecoration(
-                    border: UnderlineInputBorder(), labelText: 'Enter Content'),
+                  border: UnderlineInputBorder(),
+                  labelText: 'Enter Content',
+                ),
+                minLines: 1,
+                maxLines: 10,
+                scrollPhysics:
+                    const ClampingScrollPhysics(), // Enable scrolling when content exceeds the maximum lines
               ),
               const SizedBox(height: 50),
               ElevatedButton(
